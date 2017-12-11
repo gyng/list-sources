@@ -79,7 +79,8 @@
     const colors = {
       img: "#45a1ff",
       audio: "#30e60b",
-      video: "#ff0039"
+      video: "#ff0039",
+      scanned: "cyan"
     };
 
     row.style = `
@@ -115,11 +116,22 @@
 
       preview.style = "display: none;";
       if (type === "audio" || type === "video") {
-        preview.appendChild(s.cloneNode());
-        thumb.appendChild(s.cloneNode());
+        let source = s.cloneNode ? s : document.createElement("source");
+        if (!s.cloneNode) {
+          source.src = s.src;
+        }
+
+        preview.appendChild(source.cloneNode());
+
+        if (Object.keys(seen).length < 150) {
+          thumb.appendChild(source.cloneNode());
+        }
       } else {
         preview.setAttribute("src", s.src);
-        thumb.setAttribute("src", s.src);
+
+        if (Object.keys(seen).length < 150) {
+          thumb.setAttribute("src", s.src);
+        }
       }
 
       const link = document.createElement("div");
@@ -187,7 +199,6 @@
 
       if (type !== "img") {
         thumb.onloadedmetadata = m => {
-          console.log(m);
           if (!m || !m.target) {
             return;
           }
@@ -225,7 +236,7 @@
   };
 
   const createSection = (name, sources, type) => {
-    if (!sources || sources.length === 0) {
+    if (type !== "scanned" && (!sources || sources.length === 0)) {
       return document.createElement("div");
     }
 
@@ -235,6 +246,8 @@
     heading.style =
       "font-family: Segoe UI, San Francisco, sans-serif; font-size: 17px; font-weight: 700; margin: 12px 0 8px;";
     section.appendChild(heading);
+    section.id = `__list-sources-${type}`;
+
     const rows = sources.map(s => createRows(s, type));
     rows.forEach(r => {
       section.appendChild(r);
@@ -242,9 +255,10 @@
     return section;
   };
 
+  list.appendChild(createSection("🔎 Scanned", [], "scanned"));
   list.appendChild(createSection("🎥 Videos", allSources.video, "video"));
   list.appendChild(createSection("📻 Audio", allSources.audio, "audio"));
-  list.appendChild(createSection("🖼 Images", allSources.image, "img"));
+  list.appendChild(createSection("📷 Images", allSources.image, "img"));
 
   const container = document.createElement("div");
   container.className = "__list-sources-container";
@@ -263,4 +277,15 @@
   container.appendChild(list);
 
   document.body.appendChild(container);
+
+  chrome.runtime.onMessage.addListener(request => {
+    if (!seen[request.url]) {
+      const scanned = document.querySelector("#__list-sources-scanned");
+      const rows = createRows(
+        { el: document.body, sources: [{ src: request.info.url }] },
+        request.type
+      );
+      scanned.appendChild(rows);
+    }
+  });
 })();
