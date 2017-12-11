@@ -1,7 +1,9 @@
 # List Sources
 
+![Screenshot](docs/screenshot.png)
+
 A small WebExtension to list all sources for videos, images, and audio elements on a page as digging around the inspector is a pain.
 
-Attempts to extract background images too, and includes previews for sources.
+Attempts to extract background images, and includes previews for sources.
 
-Works standalone, but also compatiable with my other addon [Save In](https://github.com/gyng/save-in/).
+Works standalone, but was made to be compatiable with [Save In](https://github.com/gyng/save-in/).
