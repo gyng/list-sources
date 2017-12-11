@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "List Sources",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "List all sources for videos, images, and audio elements on a page.",
+    "description": "Description of the add-on."
+  }
+}
