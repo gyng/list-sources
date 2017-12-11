@@ -1,1 +1,9 @@
-document.getElementById("__list-sources-container").remove();
+(function disable() {
+  const containers = document.querySelectorAll(".__list-sources-container");
+
+  if (containers) {
+    containers.forEach(c => {
+      c.parentNode.removeChild(c);
+    });
+  }
+}());

@@ -1,5 +1,11 @@
 (function listSources() {
   const getSource = el => {
+    if (el.src || el.currentSrc) {
+      const source = document.createElement("source");
+      source.src = el.src || el.currentSrc;
+      return [source];
+    }
+
     const sources = el.querySelectorAll("source");
     return sources;
   };
@@ -63,7 +69,7 @@
   };
 
   const list = document.createElement("div");
-  list.style = "text-wrap: none;";
+  list.style = "text-wrap: none; overflow-y: auto; height: 100%;";
 
   const seen = {};
 
@@ -91,41 +97,76 @@
       }
 
       seen[s.src] = true;
+
       const preview = document.createElement(type);
-      preview.setAttribute("preload", "none");
+      const thumb = document.createElement(type);
+
+      preview.setAttribute("preload", "metadata");
+      preview.setAttribute("controls", "controls");
+      thumb.setAttribute("preload", "metadata");
+      thumb.removeAttribute("controls");
+
+      thumb.style = `
+        height: 32px;
+        width: 32px;
+        object-fit: contain;
+        margin: 0 4px;
+      `;
+
       preview.style = "display: none;";
       if (type === "audio" || type === "video") {
-        preview.appendChild(s);
+        preview.appendChild(s.cloneNode());
+        thumb.appendChild(s.cloneNode());
       } else {
         preview.setAttribute("src", s.src);
+        thumb.setAttribute("src", s.src);
       }
 
-      const link = document.createElement("a");
+      const link = document.createElement("div");
       const linkStyle = `
         width: 100%;
         white-space: nowrap;
-        margin: 2px;
+        margin: 0 8px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         font-size: 13px;
         font-family: Segoe UI, San Francisco, sans-serif;
         font-height: 1;
-        max-height: 30vh;
       `;
-
       link.style = linkStyle;
-      link.target = "_blank";
-      link.title = s.src;
-      link.href = s.src;
-      link.textContent = s.src;
 
-      link.addEventListener("mouseover", () => {
-        preview.style = `
-        display: unset;
-        align-self: flex-start;
-        max-width: 100%;
-        border: solid 1px ${colors[type]}
+      const linkText = document.createElement("a");
+      linkText.style = `
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        margin-left: 8px;
       `;
+      linkText.target = "_blank";
+      linkText.title = s.src;
+      linkText.href = s.src;
+      linkText.textContent = s.src;
+
+      const linkMetadata = document.createElement("div");
+      linkText.appendChild(linkMetadata);
+      link.appendChild(linkText);
+
+      link.addEventListener("mouseover", e => {
+        preview.style = `
+          position: absolute;
+          left: -320px;
+          top: ${e.clientY}px;
+          bottom: unset;
+          right: unset;
+          width: 340px;
+          height: 200px;
+          padding: 10px;
+          object-fit: contain;
+          border: solid 1px ${colors[type]};
+          background-color: #222222;
+          box-shadow: -4px 0 16px #0c0c0d16;
+          opacity: 1;
+        `;
         sources.el.style.outline = "5px solid #ff0039"; // eslint-disable-line
 
         if (preview.play) {
@@ -144,6 +185,34 @@
         }
       });
 
+      if (type !== "img") {
+        thumb.onloadedmetadata = m => {
+          console.log(m);
+          if (!m || !m.target) {
+            return;
+          }
+
+          let text = m.target.duration
+            ? `${Math.round(m.target.duration)}s`
+            : "";
+
+          text = m.target.videoHeight
+            ? `${text} · ${m.target.videoWidth}×${m.target.videoHeight}`
+            : text;
+
+          if (m && m.target && m.target.duration) {
+            linkMetadata.textContent = text;
+          }
+        };
+      } else {
+        thumb.onload = m => {
+          linkMetadata.textContent = `${m.target.naturalWidth}×${
+            m.target.naturalHeight
+          }`;
+        };
+      }
+
+      link.prepend(thumb);
       link.appendChild(preview);
       row.appendChild(link);
     });
@@ -178,9 +247,9 @@
   list.appendChild(createSection("🖼 Images", allSources.image, "img"));
 
   const container = document.createElement("div");
-  container.id = "__list-sources-container";
+  container.className = "__list-sources-container";
   container.style = `
-  z-index: 9999999;
+  z-index: 99999999;
   position: fixed;
   top: 0;
   right: 0;
@@ -188,7 +257,6 @@
   max-width: 1024px;
   height: 100vh;
   box-shadow: -4px 0 16px #0c0c0d16;
-  overflow: scroll;
   background-color: #ededf0;
   padding: 12px 0 0 12px;
 `;
