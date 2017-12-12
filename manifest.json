@@ -35,8 +35,7 @@
   },
 
   "icons": {
-    "48": "icons/ic_photo_library_black_48dp_2x.png",
-    "96": "icons/ic_photo_library_black_48dp_2x.png",
-    "128": "icons/ic_photo_library_black_48dp_2x.png"
+    "48": "icons/ic_photo_library_black_48dp_1x.png",
+    "96": "icons/ic_photo_library_black_48dp_2x.png"
   }
 }
