@@ -71,6 +71,7 @@
     text-wrap: none;
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 0 12px;
     height: 100%;
   `;
 
@@ -336,7 +337,6 @@
     height: 100vh;
     box-shadow: -4px 0 16px #0c0c0d16;
     background-color: #ededf0;
-    padding: 12px 0 0 12px;
   `;
   container.appendChild(list);
 
