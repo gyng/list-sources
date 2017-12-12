@@ -162,8 +162,28 @@
       linkText.href = s.src;
       linkText.textContent = s.src;
 
+      const toolRow = document.createElement("div");
+      toolRow.style = `
+        display: flex;
+        flex-direction: row;
+      `;
+
       const linkMetadata = document.createElement("div");
-      linkText.appendChild(linkMetadata);
+
+      const scrollIntoView = document.createElement("div");
+      scrollIntoView.style = `
+        margin-right: 4px;
+        pointer: cursor;
+      `;
+      scrollIntoView.textContent = "👁";
+      scrollIntoView.onclick = e => {
+        e.preventDefault();
+        sources.el.scrollIntoView({ behavior: "smooth" });
+      };
+
+      toolRow.appendChild(scrollIntoView);
+      toolRow.appendChild(linkMetadata);
+      linkText.appendChild(toolRow);
       link.appendChild(linkText);
 
       link.addEventListener("mouseover", e => {
@@ -270,17 +290,17 @@
   const container = document.createElement("div");
   container.className = "__list-sources-container";
   container.style = `
-  z-index: 99999999;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40vw;
-  max-width: 1024px;
-  height: 100vh;
-  box-shadow: -4px 0 16px #0c0c0d16;
-  background-color: #ededf0;
-  padding: 12px 0 0 12px;
-`;
+    z-index: 99999999;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40vw;
+    max-width: 1024px;
+    height: 100vh;
+    box-shadow: -4px 0 16px #0c0c0d16;
+    background-color: #ededf0;
+    padding: 12px 0 0 12px;
+  `;
   container.appendChild(list);
 
   document.body.appendChild(container);

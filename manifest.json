@@ -16,17 +16,22 @@
     "scripts": ["src/background/index.js"]
   },
 
-  "permissions": [
-    "<all_urls>",
-    "activeTab",
-    "webRequest"
-  ],
+  "permissions": ["<all_urls>", "activeTab", "webRequest"],
+
+  "commands": {
+    "toggle-active": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S"
+      }
+    }
+  },
 
   "browser_action": {
     "default_icon": {
       "16": "icons/ic_photo_library_black_48dp_2x.png",
       "32": "icons/ic_photo_library_black_48dp_2x.png"
-    }
+    },
+    "default_title": "List sources (Ctrl+Shift+S)"
   },
 
   "icons": {

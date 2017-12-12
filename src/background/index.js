@@ -24,7 +24,7 @@ const requestCallback = type => request => {
 
 const mediaCallback = requestCallback("video");
 
-chrome.browserAction.onClicked.addListener(() => {
+const toggleActive = () => {
   if (active) {
     chrome.tabs.executeScript(null, { file: "src/content/disable.js" });
     chrome.webRequest.onBeforeRequest.removeListener(mediaCallback);
@@ -47,6 +47,13 @@ chrome.browserAction.onClicked.addListener(() => {
     chrome.browserAction.setIcon({
       path: "icons/ic_photo_library_black_48dp_2x_active.png"
     });
+  }
+};
+
+chrome.browserAction.onClicked.addListener(toggleActive);
+browser.commands.onCommand.addListener(command => {
+  if (command === "toggle-active") {
+    toggleActive();
   }
 });
 
