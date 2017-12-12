@@ -5,7 +5,7 @@
   },
 
   "extensionDescription": {
-    "message": "List all sources for videos, images, and audio elements on a page.",
+    "message": "Adds a button to list all sources for videos, images, and audio elements on a page.",
     "description": "Description of the add-on."
   }
 }

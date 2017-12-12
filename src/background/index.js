@@ -71,3 +71,11 @@ const inject = tab => {
 
 chrome.tabs.onUpdated.addListener(inject);
 chrome.tabs.onActivated.addListener(inject);
+
+chrome.runtime.onMessage.addListener(request => {
+  if (request.type === "download") {
+    chrome.downloads.download({
+      url: request.src
+    });
+  }
+});

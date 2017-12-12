@@ -181,7 +181,26 @@
         sources.el.scrollIntoView({ behavior: "smooth" });
       };
 
+      const downloadLink = document.createElement("a");
+      downloadLink.style = `
+        margin-right: 4px;
+        pointer: cursor;
+      `;
+      downloadLink.textContent = "💾";
+      downloadLink.setAttribute("href", s.src);
+      downloadLink.setAttribute("download", s.src);
+      downloadLink.setAttribute("target", "_blank");
+      downloadLink.onclick = e => {
+        e.preventDefault();
+        chrome.runtime.sendMessage({
+          type: "download",
+          src: s.src
+        });
+        return null;
+      };
+
       toolRow.appendChild(scrollIntoView);
+      toolRow.appendChild(downloadLink);
       toolRow.appendChild(linkMetadata);
       linkText.appendChild(toolRow);
       link.appendChild(linkText);

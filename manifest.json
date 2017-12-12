@@ -16,7 +16,7 @@
     "scripts": ["src/background/index.js"]
   },
 
-  "permissions": ["<all_urls>", "activeTab", "webRequest"],
+  "permissions": ["<all_urls>", "activeTab", "tabs", "downloads", "webRequest"],
 
   "commands": {
     "toggle-active": {
