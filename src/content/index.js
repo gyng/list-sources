@@ -92,7 +92,6 @@
       flex-direction: column;
       flex-align: flex-start;
       margin: 4px 0;
-      border-left: solid 4px ${colors[type]};
     `;
 
     sources.sources.forEach(s => {
@@ -140,24 +139,24 @@
       }
 
       const link = document.createElement("div");
-      const linkStyle = `
+      link.style = `
         width: 100%;
         white-space: nowrap;
-        margin: 0 8px;
+        margin: 0;
         display: flex;
         flex-direction: row;
         font-size: 13px;
         font-family: Segoe UI, San Francisco, sans-serif;
         font-height: 1;
       `;
-      link.style = linkStyle;
 
       const linkText = document.createElement("a");
       linkText.style = `
         display: flex;
         flex-direction: column;
         text-decoration: none;
-        margin-left: 8px;
+        margin-left: 4px;
+        color: #0060df !important;
       `;
       linkText.target = "_blank";
       linkText.title = s.src;
@@ -171,6 +170,9 @@
       `;
 
       const linkMetadata = document.createElement("div");
+      linkMetadata.style = `
+        color: #737373 !important;
+      `;
 
       const scrollIntoView = document.createElement("div");
       scrollIntoView.style = `
@@ -271,7 +273,16 @@
         };
       }
 
+      const decorator = document.createElement("div");
+      decorator.style = `
+        width: 4px;
+        background-color: ${colors[type]};
+        border-radius: 2px;
+        margin: 0 4px;
+      `;
+
       link.prepend(thumb);
+      link.prepend(decorator);
       link.appendChild(preview);
       row.appendChild(link);
     });
@@ -291,8 +302,13 @@
     const section = document.createElement("div");
     const heading = document.createElement("div");
     heading.textContent = name;
-    heading.style =
-      "font-family: Segoe UI, San Francisco, sans-serif; font-size: 17px; font-weight: 700; margin: 12px 0 8px;";
+    heading.style = `
+      font-family: Segoe UI, San Francisco, sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin: 12px 0 8px;
+      color: #0c0c0d !important;
+    `;
     section.appendChild(heading);
     section.id = `__list-sources-${type}`;
 
