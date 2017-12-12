@@ -274,9 +274,9 @@
       }
 
       const decorator = document.createElement("div");
+      decorator.textContent = " ";
       decorator.style = `
-        width: 4px;
-        background-color: ${colors[type]};
+        border: solid 2px ${colors[type] || "black"};
         border-radius: 2px;
         margin: 0 4px;
       `;
