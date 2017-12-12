@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style type="text/css">
+     :root {
+      --c-dark: rgb(171, 221, 54);
+      --c-light: #000000;
+    }
+
+    body {
+      background-color: grey;
+    }
+
+    .promo {
+      background-color: var(--c-dark);
+      color: black;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 25px;
+    }
+
+    .promo .icon {
+      width: 20%;
+      filter: brightness(200%);
+    }
+
+    .promo .icon path {
+      fill: var(--c-light);
+    }
+
+    .promo .name {
+      margin-left: 5%;
+      font-size: 400%;
+    }
+
+    .promo .text {
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="promo" style="width: 440px; height: 280px;">
+    <img class="icon" src="../icons/ic_photo_library_black_48dp_2x.png"></img>
+    <div class="text">
+      <div class="name">List Sources</div>
+    </div>
+  </div>
+</body>
+
+</html>
