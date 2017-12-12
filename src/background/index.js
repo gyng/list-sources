@@ -1,21 +1,28 @@
 let active = false;
 const activeTabs = {};
 
-const setTabActiveStatus = (status, id) => {
-  if (id) {
-    activeTabs[id] = status;
-  } else {
-    chrome.tabs.query(
-      {
-        active: true,
-        windowType: "normal",
-        currentWindow: true
-      },
-      tabs => {
-        activeTabs[tabs[0].id] = status;
+const setCurrentTabActiveStatus = status => {
+  chrome.tabs.query(
+    {
+      active: true,
+      windowType: "normal",
+      currentWindow: true
+    },
+    tabs => {
+      const tab = tabs[0];
+      if (!activeTabs[tab.windowId]) {
+        activeTabs[tab.windowId] = {};
       }
-    );
+      activeTabs[tab.windowId][tab.id] = status;
+    }
+  );
+};
+
+const setTabActiveStatus = (status, windowId, tabId) => {
+  if (!activeTabs[windowId]) {
+    activeTabs[windowId] = {};
   }
+  activeTabs[windowId][tabId] = status;
 };
 
 const requestCallback = type => request => {
@@ -30,7 +37,7 @@ const toggleActive = () => {
     chrome.webRequest.onBeforeRequest.removeListener(mediaCallback);
 
     active = false;
-    setTabActiveStatus(false);
+    setCurrentTabActiveStatus(false);
     chrome.browserAction.setIcon({
       path: "icons/ic_photo_library_black_48dp_2x.png"
     });
@@ -43,7 +50,7 @@ const toggleActive = () => {
     });
 
     active = true;
-    setTabActiveStatus(true);
+    setCurrentTabActiveStatus(true);
     chrome.browserAction.setIcon({
       path: "icons/ic_photo_library_black_48dp_2x_active.png"
     });
@@ -57,20 +64,47 @@ browser.commands.onCommand.addListener(command => {
   }
 });
 
-const inject = tab => {
-  const tabId = tab.tabId || tab; // tab object or tab ID
+const toggleInject = (windowId, tabId) => {
+  if (!activeTabs[windowId]) {
+    activeTabs[windowId] = {};
+    // New window, let tabs.onUpdated handle this on load
+    return;
+  }
+
   // Only inject if not loaded in tab
-  if (!activeTabs[tabId] && active === true) {
-    chrome.tabs.executeScript(null, { file: "src/content/index.js" });
-    setTabActiveStatus(true, tabId);
-  } else if (activeTabs[tabId] && !active) {
-    chrome.tabs.executeScript(null, { file: "src/content/disable.js" });
-    setTabActiveStatus(false, tabId);
+  if (active && !activeTabs[windowId][tabId]) {
+    chrome.tabs.executeScript(tabId, { file: "src/content/index.js" });
+    setTabActiveStatus(true, windowId, tabId);
+  } else if (!active && activeTabs[windowId][tabId]) {
+    chrome.tabs.executeScript(tabId, { file: "src/content/disable.js" });
+    setTabActiveStatus(false, windowId, tabId);
   }
 };
 
-chrome.tabs.onUpdated.addListener(inject);
-chrome.tabs.onActivated.addListener(inject);
+const injectUpdated = (tabId, change, win) => {
+  const windowId = win.windowId;
+
+  // Page navigated, need to reset injected status
+  if (change.status === "loading" && change.url) {
+    if (activeTabs[windowId] && activeTabs[windowId][tabId]) {
+      activeTabs[windowId][tabId] = false;
+    }
+  }
+
+  // Only inject if page finished loading
+  if (change.status === "complete") {
+    toggleInject(windowId, tabId);
+  }
+};
+
+const injectActivated = tab => {
+  const windowId = tab.windowId;
+  const tabId = tab.tabId;
+  toggleInject(windowId, tabId);
+};
+
+chrome.tabs.onUpdated.addListener(injectUpdated);
+chrome.tabs.onActivated.addListener(injectActivated);
 
 chrome.runtime.onMessage.addListener(request => {
   if (request.type === "download") {

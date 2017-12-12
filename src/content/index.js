@@ -113,6 +113,8 @@
       thumb.style = `
         height: 32px;
         width: 32px;
+        min-height: 32px;
+        min-width: 32px;
         object-fit: contain;
         margin: 0 4px;
       `;

@@ -5,7 +5,7 @@
   },
 
   "extensionDescription": {
-    "message": "Adds a button to list all sources for videos, images, and audio elements on a page.",
+    "message": "Adds a button to list all sources for videos, images, and audio elements on a page. Shortcut: Ctrl+Shift+V",
     "description": "Description of the add-on."
   }
 }
