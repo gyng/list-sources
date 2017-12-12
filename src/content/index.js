@@ -34,12 +34,10 @@
 
       computedStyle = computedStyle === "none" ? null : computedStyle;
       let background = inlineStyle || computedStyle;
-      if (
-        background &&
-        (background.startsWith("url(data:image") ||
-          background.startsWith('url("data:image'))
-      ) {
+      if (background && background.startsWith("url(")) {
         background = background.replace(/(url\("?|"?\).*)/g, "");
+      } else {
+        background = null;
       }
 
       if (el.tagName.toLowerCase() === "img") {
@@ -69,7 +67,12 @@
   };
 
   const list = document.createElement("div");
-  list.style = "text-wrap: none; overflow-y: auto; height: 100%;";
+  list.style = `
+    text-wrap: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+  `;
 
   const seen = {};
 
@@ -116,7 +119,7 @@
 
       preview.style = "display: none;";
       if (type === "audio" || type === "video") {
-        let source = s.cloneNode ? s : document.createElement("source");
+        const source = s.cloneNode ? s : document.createElement("source");
         if (!s.cloneNode) {
           source.src = s.src;
         }
@@ -179,7 +182,11 @@
           box-shadow: -4px 0 16px #0c0c0d16;
           opacity: 1;
         `;
+        // It's ok to dirty the page
+        sources.el.style.transitionTimingFunction = "ease-in"; // eslint-disable-line
+        sources.el.style.transition = "all 0.1s"; // eslint-disable-line
         sources.el.style.outline = "5px solid #ff0039"; // eslint-disable-line
+        sources.el.style.outlineOffset = "-5px"; // eslint-disable-line
 
         if (preview.play) {
           preview.setAttribute("controls", true);

@@ -1,5 +1,7 @@
 # List Sources
 
+[![Build Status](https://travis-ci.org/gyng/list-sources.svg?branch=master)](https://travis-ci.org/gyng/list-sources)
+
 ![Screenshot](docs/screenshot.png)
 
 A small WebExtension to list all sources for videos, images, and audio elements on a page as digging around the inspector is a pain.

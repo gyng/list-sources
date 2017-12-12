@@ -6,4 +6,4 @@
       c.parentNode.removeChild(c);
     });
   }
-}());
+})();
