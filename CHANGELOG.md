@@ -1,3 +1,7 @@
+# 0.0.3
+
+* Minor performance improvements when inactive
+
 # 0.0.2
 
 * Handle windows

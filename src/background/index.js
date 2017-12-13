@@ -26,7 +26,9 @@ const setTabActiveStatus = (status, windowId, tabId) => {
 };
 
 const requestCallback = type => request => {
-  chrome.tabs.sendMessage(request.tabId, { type, info: request });
+  if (active) {
+    chrome.tabs.sendMessage(request.tabId, { type, info: request });
+  }
 };
 
 const mediaCallback = requestCallback("video");

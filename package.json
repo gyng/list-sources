@@ -1,6 +1,6 @@
 {
     "name": "list-sources",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "license": "MIT",
     "scripts": {
       "build": "env -u WEB_EXT_API_KEY -u WEB_EXT_API_SECRET web-ext build --overwrite-dest -i test docs yarn.lock",
