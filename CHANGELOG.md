@@ -1,3 +1,7 @@
+# 0.0.4
+
+* Fix malformed extension manifest for Chrome (oops!)
+
 # 0.0.3
 
 * Minor performance improvements when inactive

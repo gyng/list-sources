@@ -60,7 +60,7 @@ const toggleActive = () => {
 };
 
 chrome.browserAction.onClicked.addListener(toggleActive);
-browser.commands.onCommand.addListener(command => {
+chrome.commands.onCommand.addListener(command => {
   if (command === "toggle-active") {
     toggleActive();
   }
